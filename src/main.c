@@ -3,10 +3,16 @@
 #include <limits.h>
 #include <linux/limits.h>
 #include <stdio.h>
+#include <readline/history.h>
+#include <readline/readline.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/wait.h>
 #include <unistd.h>
+
+extern char *xmalloc PARAMS((size_t));
+
+char *builtin_commands[] = {"echo", "exit", NULL};
 
 typedef struct Command {
   char **argv;
@@ -14,6 +20,14 @@ typedef struct Command {
   int output_type_flag;
   int append_flag;
 } Command;
+
+char *dupstr(char *s) {
+  char *r;
+
+  r = xmalloc(strlen(s) + 1);
+  strcpy(r, s);
+  return (r);
+}
 
 void parse_command(char *input, Command *cmd) {
   int argv_idx = 0;
@@ -243,14 +257,57 @@ void handle_cd(char **argv) {
   printf("cd: %s: No such file or directory\n", argv[1]);
 }
 
+char *command_generator(const char *text, int state) {
+  static int list_index, len;
+  char *name;
+
+  if (!state) {
+    list_index = 0;
+    len = strlen(text);
+  }
+
+  while (name = builtin_commands[list_index]) {
+    list_index++;
+    if (strncmp(name, text, len) == 0) {
+      return (dupstr(name));
+    }
+  }
+
+  return ((char *)NULL);
+}
+
+char **command_completion(const char *text, int start, int end) {
+  char **matches;
+  matches = (char **)NULL;
+  if (start == 0) {
+    matches = rl_completion_matches(text, command_generator);
+  }
+  return (matches);
+}
+
+void init_readline() { rl_attempted_completion_function = command_completion; }
+
+char *rl_gets(char *line_read) {
+  if (line_read) {
+    free(line_read);
+    line_read = (char *)NULL;
+  }
+
+  line_read = readline("$ ");
+  if (line_read && *line_read) {
+    add_history(line_read);
+  }
+  return line_read;
+}
+
 int main(int argc, char *argv[]) {
   // Flush after every printf
   setbuf(stdout, NULL);
-  char command[1024];
+  init_readline();
+  char *command = (char *)NULL;
   do {
-    printf("$ ");
     // Get command
-    fgets(command, sizeof(command), stdin);
+    command = rl_gets(command);
     if (strcmp(command, "\n") == 0)
       continue;
     command[strcspn(command, "\n")] = '\0';
