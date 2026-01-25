@@ -6,6 +6,8 @@ CMakeFiles/shell.dir/src/main.c.o: src/main.c \
   /usr/include/bits/atomic_wide_counter.h \
   /usr/include/bits/byteswap.h \
   /usr/include/bits/confname.h \
+  /usr/include/bits/dirent.h \
+  /usr/include/bits/dirent_ext.h \
   /usr/include/bits/endian.h \
   /usr/include/bits/endianness.h \
   /usr/include/bits/environments.h \
@@ -84,6 +86,7 @@ CMakeFiles/shell.dir/src/main.c.o: src/main.c \
   /usr/include/bits/waitstatus.h \
   /usr/include/bits/wordsize.h \
   /usr/include/ctype.h \
+  /usr/include/dirent.h \
   /usr/include/endian.h \
   /usr/include/fcntl.h \
   /usr/include/features-time64.h \
@@ -141,7 +144,7 @@ shell: /usr/lib/Scrt1.o \
 
 /usr/lib/libc.so.6:
 
-/usr/include/bits/types/clockid_t.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/libgcc.a:
 
 /usr/include/bits/local_lim.h:
 
@@ -167,6 +170,10 @@ shell: /usr/lib/Scrt1.o \
 
 /usr/include/bits/stdint-intn.h:
 
+/usr/lib/ld-linux-x86-64.so.2:
+
+/usr/include/bits/stat.h:
+
 /usr/include/bits/getopt_core.h:
 
 /usr/include/bits/sigstack.h:
@@ -183,29 +190,19 @@ shell: /usr/lib/Scrt1.o \
 
 /usr/include/bits/stdio_lim.h:
 
-/usr/include/bits/long-double.h:
-
-/usr/include/bits/floatn.h:
-
 /usr/include/bits/unistd_ext.h:
 
 /usr/include/string.h:
 
 /usr/include/bits/byteswap.h:
 
+/usr/include/bits/dirent.h:
+
 /usr/include/readline/readline.h:
 
 /usr/include/bits/libc-header-start.h:
 
 /usr/include/readline/tilde.h:
-
-/usr/include/bits/fcntl.h:
-
-CMakeFiles/shell.dir/src/main.c.o:
-
-/usr/include/bits/endian.h:
-
-/usr/include/bits/types/__sigval_t.h:
 
 /usr/include/alloca.h:
 
@@ -214,6 +211,14 @@ CMakeFiles/shell.dir/src/main.c.o:
 /usr/include/bits/posix1_lim.h:
 
 /usr/lib/libc.so:
+
+/usr/include/bits/fcntl.h:
+
+CMakeFiles/shell.dir/src/main.c.o:
+
+/usr/include/bits/endian.h:
+
+/usr/include/bits/types/__sigval_t.h:
 
 /usr/lib/libreadline.so:
 
@@ -227,19 +232,31 @@ CMakeFiles/shell.dir/src/main.c.o:
 
 src/main.c:
 
-/usr/include/bits/stat.h:
+/usr/include/bits/floatn.h:
 
-/usr/lib/ld-linux-x86-64.so.2:
+/usr/include/bits/types/struct_timespec.h:
+
+/usr/include/bits/pthreadtypes.h:
+
+/usr/include/bits/dirent_ext.h:
+
+/usr/include/bits/fcntl-linux.h:
+
+/usr/include/strings.h:
+
+/usr/include/bits/long-double.h:
 
 /usr/include/bits/thread-shared-types.h:
-
-/usr/include/bits/atomic_wide_counter.h:
-
-/usr/include/bits/posix_opt.h:
 
 /usr/include/bits/sigthread.h:
 
 /usr/include/bits/pthread_stack_min.h:
+
+/usr/include/bits/posix_opt.h:
+
+/usr/include/bits/atomic_wide_counter.h:
+
+/usr/include/bits/types/clockid_t.h:
 
 /usr/include/bits/types/__fpos64_t.h:
 
@@ -247,11 +264,11 @@ src/main.c:
 
 /usr/include/readline/chardefs.h:
 
-/usr/include/bits/types/__fpos_t.h:
+/usr/include/bits/types/stack_t.h:
 
-/usr/include/bits/types/clock_t.h:
+/usr/include/bits/sigevent-consts.h:
 
-/usr/include/linux/limits.h:
+/usr/include/bits/posix2_lim.h:
 
 /usr/include/bits/pthread_stack_min-dynamic.h:
 
@@ -265,15 +282,11 @@ src/main.c:
 
 /usr/include/bits/sigcontext.h:
 
-/usr/include/bits/pthreadtypes.h:
+/usr/include/bits/types/__fpos_t.h:
 
-/usr/include/bits/types/stack_t.h:
+/usr/include/bits/types/clock_t.h:
 
-/usr/include/bits/posix2_lim.h:
-
-/usr/include/bits/sigevent-consts.h:
-
-/usr/include/bits/types/struct_timespec.h:
+/usr/include/linux/limits.h:
 
 /usr/include/bits/types/cookie_io_functions_t.h:
 
@@ -339,6 +352,8 @@ src/main.c:
 
 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/syslimits.h:
 
+/usr/include/dirent.h:
+
 /usr/include/features-time64.h:
 
 /usr/include/bits/endianness.h:
@@ -358,10 +373,6 @@ src/main.c:
 /usr/include/signal.h:
 
 /usr/include/stdlib.h:
-
-/usr/include/bits/fcntl-linux.h:
-
-/usr/include/strings.h:
 
 /usr/include/sys/cdefs.h:
 
@@ -394,5 +405,3 @@ src/main.c:
 /usr/lib/libgcc_s.so.1:
 
 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtbeginS.o:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/libgcc.a:

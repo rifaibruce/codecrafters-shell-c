@@ -9,10 +9,11 @@
 #include <string.h>
 #include <sys/wait.h>
 #include <unistd.h>
+#include <dirent.h>
 
 extern char *xmalloc PARAMS((size_t));
 
-char *builtin_commands[] = {"echo", "exit", NULL};
+char *builtin_commands[] = {"echo", "exit", "type", "cd", "pwd", NULL};
 
 typedef struct Command {
   char **argv;
@@ -259,11 +260,23 @@ void handle_cd(char **argv) {
 
 char *command_generator(const char *text, int state) {
   static int list_index, len;
+  static char *path_cpy = (char *)NULL, *current_path_ptr = (char *)NULL;
+  static DIR *current_dir = (DIR *)NULL;
   char *name;
+  static char *path_token = (char *)NULL;
 
   if (!state) {
     list_index = 0;
     len = strlen(text);
+    if (path_cpy) {
+      free(path_cpy);
+      path_cpy = (char *)NULL;
+    }
+    if (current_dir) {
+      closedir(current_dir);
+      current_dir = (DIR *)NULL;
+    }
+    path_token = (char *)NULL;
   }
 
   while (name = builtin_commands[list_index]) {
@@ -271,6 +284,38 @@ char *command_generator(const char *text, int state) {
     if (strncmp(name, text, len) == 0) {
       return (dupstr(name));
     }
+  }
+
+  if (!path_cpy) {
+    path_cpy = strdup(getenv("PATH"));
+    path_token = strtok_r(path_cpy, ":", &current_path_ptr);
+  }
+
+  while (1) {
+    if (!current_dir) {
+      if (!path_token) {
+        path_token = strtok_r(NULL, ":", &current_path_ptr);
+      }
+
+      if (!path_token)
+        return (char *)NULL;
+
+      current_dir = opendir(path_token);
+      path_token = (char *)NULL;
+      if (!current_dir)
+        continue;
+    }
+
+    struct dirent *file = readdir(current_dir);
+
+    if (!file) {
+      closedir(current_dir);
+      current_dir = (DIR *)NULL;
+      continue;
+    }
+
+    if (strncmp(file->d_name, text, len) == 0)
+      return ((dupstr(file->d_name)));
   }
 
   return ((char *)NULL);
