@@ -62,3 +62,4 @@ shell
 output.txt
 build/
 *.o
+/valgrind-out.txt
