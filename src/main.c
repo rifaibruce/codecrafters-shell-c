@@ -346,13 +346,13 @@ char *rl_gets(char *line_read) {
 }
 
 int main(int argc, char *argv[]) {
-  // Flush after every printf
   setbuf(stdout, NULL);
   init_readline();
   char *command = (char *)NULL;
   do {
-    // Get command
     command = rl_gets(command);
+    if (command == NULL)
+      exit(EXIT_SUCCESS);
     if (strcmp(command, "\n") == 0)
       continue;
     command[strcspn(command, "\n")] = '\0';
