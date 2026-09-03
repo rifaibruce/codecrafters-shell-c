@@ -80,9 +80,6 @@ child inherits the redirection without any extra work.
 
 ## Known issues
 
-- Built-in `pwd` is shadowed by `/usr/bin/pwd` because external execution is
-  attempted before the `pwd` branch in the dispatch chain.
-- `Ctrl-D` at the prompt is not handled and terminates the shell uncleanly.
 - Token and argument buffers are fixed-size without bounds checks.
 - Allocations from `strdup()` and the argv array are not freed between commands.
 
