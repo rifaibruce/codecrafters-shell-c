@@ -399,12 +399,13 @@ int main(int argc, char *argv[]) {
       handle_echo(cmd.argv);
     } else if (strcmp(cmd.argv[0], "type") == 0) {
       handle_type(cmd.argv);
-    } else if (handle_exec(cmd.argv) == 1) {
+
     } else if (strcmp(cmd.argv[0], "pwd") == 0) {
       const char *pwd_path = getenv("PWD");
       printf("%s\n", pwd_path);
     } else if (strcmp(cmd.argv[0], "cd") == 0) {
       handle_cd(cmd.argv);
+    } else if (handle_exec(cmd.argv) == 1) {
     } else {
       printf("%s: command not found\n", command);
     }
