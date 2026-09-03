@@ -1,34 +1,92 @@
-[![progress-banner](https://backend.codecrafters.io/progress/shell/f8bb9d4f-d46b-48f7-a704-7247603799e0)](https://app.codecrafters.io/users/codecrafters-bot?r=2qF)
+# shell
 
-This is a starting point for C solutions to the
-["Build Your Own Shell" Challenge](https://app.codecrafters.io/courses/shell/overview).
+A POSIX-style command-line shell written from scratch in C, built through the
+CodeCrafters "Build Your Own Shell" challenge.
 
-In this challenge, you'll build your own POSIX compliant shell that's capable of
-interpreting shell commands, running external programs and builtin commands like
-cd, pwd, echo and more. Along the way, you'll learn about shell command parsing,
-REPLs, builtin commands, and more.
+No `system()`, no wrapping an existing shell — input is tokenized by hand,
+`PATH` is resolved manually, and external programs run via `fork()`/`execv()`.
 
-**Note**: If you're viewing this repo on GitHub, head over to
-[codecrafters.io](https://codecrafters.io) to try the challenge.
+## Features
 
-# Passing the first stage
+**Built-ins:** `echo`, `exit`, `type`, `cd`, `pwd`
 
-The entry point for your `shell` implementation is in `src/main.c`. Study and
-uncomment the relevant code, and push your changes to pass the first stage:
+**External commands** — resolved by scanning `PATH` and checking execute
+permission with `access()`, then executed in a forked child.
+
+**Quoting and escapes**
+
+- Single quotes preserve everything literally
+- Double quotes with backslash escapes for `"`, `\`, `$`, `` ` ``, and newline
+- Backslash escaping outside of quotes
+
+**Output redirection**
+
+- `>` / `1>` — stdout, truncate
+- `2>` — stderr, truncate
+- `>>` / `1>>` — stdout, append
+- `2>>` — stderr, append
+
+**Interactive editing** via GNU Readline — line editing, command history, and
+tab completion.
+
+**Tab completion** — completes built-ins, then walks every directory on `PATH`
+to complete external command names.
+
+**`cd` conveniences** — bare `cd` or `cd ~` goes to `$HOME`; `~/foo` expands.
+
+## Building
+
+Requires `cmake` and GNU Readline.
 
 ```sh
-git commit -am "pass 1st stage" # any msg
-git push origin master
+cmake -B build
+cmake --build build
+./build/shell
 ```
 
-Time to move on to the next stage!
+## Usage
 
-# Stage 2 & beyond
+```
+$ echo "hello   world"
+hello   world
+$ type echo
+echo is a shell builtin
+$ ls -la > files.txt
+$ ls nonexistent 2>> errors.log
+$ cd ~/projects
+```
 
-Note: This section is for stages 2 and beyond.
+## Implementation notes
 
-1. Ensure you have `cmake` installed locally
-1. Run `./your_program.sh` to run your program, which is implemented in
-   `src/main.c`.
-1. Commit your changes and run `git push origin master` to submit your solution
-   to CodeCrafters. Test output will be streamed to your terminal.
+**Parsing** is a single pass over the input with a small state machine —
+`quote_mode_flag` tracks whether the scanner is outside quotes, inside single
+quotes, or inside double quotes, and each state has its own rules for what a
+backslash means. Getting this right was the fiddliest part of the project: the
+escape rules differ between the three contexts, and a quoted string containing
+spaces has to survive word splitting as a single token.
+
+**Tab completion** was the most interesting piece to build. Readline's
+completion API expects a generator function that is called repeatedly and
+returns one match per call, returning `NULL` when exhausted — so the traversal
+state has to persist across calls in `static` variables rather than living on
+the stack. The generator walks the built-in list first, then opens each `PATH`
+directory in turn with `opendir()`/`readdir()`, resuming exactly where the
+previous call left off.
+
+**Redirection** is set up before dispatch by `dup2()`-ing the target file
+descriptor over stdout or stderr, saving the original with `dup()` so it can be
+restored after the command finishes. Because this happens before `fork()`, the
+child inherits the redirection without any extra work.
+
+## Known issues
+
+- Built-in `pwd` is shadowed by `/usr/bin/pwd` because external execution is
+  attempted before the `pwd` branch in the dispatch chain.
+- `Ctrl-D` at the prompt is not handled and terminates the shell uncleanly.
+- Token and argument buffers are fixed-size without bounds checks.
+- Allocations from `strdup()` and the argv array are not freed between commands.
+
+## Not implemented
+
+Pipes, input redirection (`<`), background jobs (`&`), signal handling, and
+environment variable expansion.
